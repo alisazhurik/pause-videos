@@ -69,6 +69,10 @@
         <figure class="wp-block-embed-youtube wp-block-embed is-type-video is-provider-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper"><iframe width="500" height="281" src="https://www.youtube.com/embed/FxYw0XPEoKE?feature=oembed&version=3&enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen" ></iframe></div><figcaption>Video youtube<br></figcaption></figure>
     </div>
     <div class="row">
+        <figure class="wp-block-embed-youtube wp-block-embed is-type-video is-provider-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper"><iframe width="560" height="315" src="https://www.youtube.com/embed/lvfyf7R8NVg?enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><figcaption>Video youtube<br></figcaption></figure>
+    </div>
+
+    <div class="row">
         <figure class="wp-block-embed-vimeo wp-block-embed is-type-video is-provider-vimeo wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper"><iframe src="https://player.vimeo.com/video/204029471?app_id=122963" width="500" height="281" frameborder="0" title="Introducing the Vimeo Panel for Adobe Premiere Pro" allow="autoplay; fullscreen" allowfullscreen="allowfullscreen" ></iframe></div><figcaption>Video as a link<br></figcaption></figure>
     </div>
     <div class="row">
@@ -107,8 +111,6 @@
             video_element: 'iframe'
         });
 
-
-
         function pauseVideo(options) {
             var settings = $.extend({
                 video_container: '.wp-block-video',
@@ -125,24 +127,18 @@
 
                     if (that.hasClass('wp-block-embed-youtube')) {              
                         // videoYouTube(video_item_id, index);
-
                     } else if (that.hasClass('wp-block-embed-vimeo')) {
-                        
                         // console.log('vimeo', video_item, '----------------');
                     } else {
-                        
                         // console.log('not found', '----------------');
                     }
-
                 })
-
-                videoYouTube();
+                videoYouTubeAPI();
             }
         }
 
-        function videoYouTube(){
+        function videoYouTubeAPI(){
             var players = new Array();
-            var isReady = false;
             window.onYouTubeIframeAPIReady = function() { 
 
                 $('.wp-block-embed-youtube iframe').each(function(i){
@@ -157,22 +153,35 @@
             }
 
             function onPlayerReady(event) { 
-                // player.stopVideo();
-                isReady = true;
                 console.log('player ready', '------------');
             }
 
             function onPlayerStateChange(event) {
                 if (event.data == YT.PlayerState.PLAYING) {
-                    console.log('playerState==1 playing');
+                    var videoId = event.target.a.id;
+                    $(players).each(function(i){
+                        var index = 'video_item_' + i;
+                        if( index != videoId) {
+                           this.stopVideo();
+                        }
+                    });
                 }
             }
+        }
 
-            $('.stop').click( function() {
-                $(players).each(function(i){
-                   this.pauseVideo();
-                });
-            });
+        function videoVimeoAPI(){ }
+        function videoDownloadedAPI(){ }
+
+        function stopAllVideos() {
+
+            function stopAllYoutubeVideos() { 
+
+            }
+
+            function stopAllVimeoVideos() { }
+
+            function stopAllDownloadedVideos() { }
+
         }
 
     </script>
