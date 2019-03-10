@@ -1,0 +1,182 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+        *, *:after, *:before {
+            box-sizing: border-box;
+        }
+        body {
+            margin:0px;
+            padding:0px;
+            height: 100%;
+            min-height: 100%;
+            position: relative;
+            background: #ffffff;
+        }
+        figure {
+            display: block;
+        }
+        .row {
+            display: block;
+            max-width: 700px;
+            margin: 20px auto;
+        }
+        video {
+            display: inline-block;
+            vertical-align: baseline;
+        }
+        iframe {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .wp-block-video video {
+            max-width: 100%;
+        }
+        .wp-block-video video {
+            width: 100%;
+            height: 100%;
+        }
+        .wp-block-embed__wrapper, 
+        .embed-responsive {
+            position: relative;
+            display: block;
+            height: 0;
+            padding: 0;
+            overflow: hidden;
+            padding-bottom: 56.25%;
+        }     
+
+    </style>
+</head>
+
+<body>
+    <div class="row">
+        <button class="stop">Stop</button>
+    </div>
+    <div class="row">
+        <figure class="wp-block-embed-youtube wp-block-embed is-type-video is-provider-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper"><iframe width="560" height="315" src="https://www.youtube.com/embed/g7U96o3f9FI?enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><figcaption>Video youtube<br></figcaption></figure>
+    </div>
+    <div class="row">
+        <figure class="wp-block-embed-youtube wp-block-embed is-type-video is-provider-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper"><iframe width="500" height="281" src="https://www.youtube.com/embed/FxYw0XPEoKE?feature=oembed&version=3&enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen" ></iframe></div><figcaption>Video youtube<br></figcaption></figure>
+    </div>
+    <div class="row">
+        <figure class="wp-block-embed-vimeo wp-block-embed is-type-video is-provider-vimeo wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper"><iframe src="https://player.vimeo.com/video/204029471?app_id=122963" width="500" height="281" frameborder="0" title="Introducing the Vimeo Panel for Adobe Premiere Pro" allow="autoplay; fullscreen" allowfullscreen="allowfullscreen" ></iframe></div><figcaption>Video as a link<br></figcaption></figure>
+    </div>
+    <div class="row">
+        <figure class="wp-block-embed-vimeo wp-block-embed is-type-video is-provider-vimeo wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper"><iframe src="https://player.vimeo.com/video/204029471?app_id=122963" width="500" height="281" frameborder="0" title="Introducing the Vimeo Panel for Adobe Premiere Pro" allow="autoplay; fullscreen" allowfullscreen="allowfullscreen" ></iframe></div><figcaption>Video embed vimeo<br></figcaption></figure>
+    </div>
+    <div class="row">
+        <!-- <figure class="wp-block-video"><video controls="controls" src="https://motionarray.com/wp-content/uploads/masking-tutorial11.mp4"></video><figcaption>Video as a tag video</figcaption></figure> -->
+    </div>
+    <div class="row">
+        <!-- <figure class="wp-block-video"><video controls="controls" src="https://motionarray.com/wp-content/uploads/masking-tutorial22.mp4"></video></figure> -->
+    </div>
+
+    
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script type="text/javascript" src="http://www.youtube.com/iframe_api"></script>
+    <script type="text/javascript">
+        
+
+        // window.videoApiLoaded = [];
+        // window.videoApiLoaded.youtube = false;
+
+        // window.onYouTubeIframeAPIReady = function() { document.dispatchEvent(new CustomEvent('onYouTubeIframeAPIReady', {})) };
+
+        // if(window.videoApiLoaded.youtube == false) {
+        //     var tag = document.createElement('script');
+        //     tag.src = "https://www.youtube.com/iframe_api";
+        //     var firstScriptTag = document.getElementsByTagName('script')[0];
+        //     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        //     window.videoApiLoaded.youtube = true;
+        // }
+
+
+        pauseVideo({
+            video_container: '.is-type-video', 
+            video_element: 'iframe'
+        });
+
+
+
+        function pauseVideo(options) {
+            var settings = $.extend({
+                video_container: '.wp-block-video',
+                video_element: 'video'
+            }, options);
+            
+            if($(settings.video_container).length > 0) {
+
+                $(settings.video_container).each(function(index){
+                    var that = $(this);
+                    var video_item_id = 'video_item_' + index;
+                    var video_item = that.find(settings.video_element)
+                    video_item.attr('id', video_item_id)
+
+                    if (that.hasClass('wp-block-embed-youtube')) {              
+                        // videoYouTube(video_item_id, index);
+
+                    } else if (that.hasClass('wp-block-embed-vimeo')) {
+                        
+                        // console.log('vimeo', video_item, '----------------');
+                    } else {
+                        
+                        // console.log('not found', '----------------');
+                    }
+
+                })
+
+                videoYouTube();
+            }
+        }
+
+        function videoYouTube(){
+            var players = new Array();
+            var isReady = false;
+            window.onYouTubeIframeAPIReady = function() { 
+
+                $('.wp-block-embed-youtube iframe').each(function(i){
+                    players[i] = new YT.Player('video_item_' + i, { 
+                        events: { 
+                            'onReady': onPlayerReady,
+                            'onStateChange': onPlayerStateChange
+                        } 
+                    })
+                })
+                console.log('iframe api ready', '----------');
+            }
+
+            function onPlayerReady(event) { 
+                // player.stopVideo();
+                isReady = true;
+                console.log('player ready', '------------');
+            }
+
+            function onPlayerStateChange(event) {
+                if (event.data == YT.PlayerState.PLAYING) {
+                    console.log('playerState==1 playing');
+                }
+            }
+
+            $('.stop').click( function() {
+                $(players).each(function(i){
+                   this.pauseVideo();
+                });
+            });
+        }
+
+    </script>
+    
+</body>
+
+</html>
