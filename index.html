@@ -71,6 +71,12 @@
         <button class="stop">Stop</button>
     </div>
     <div class="row">
+        <figure class="wp-block-embed-youtube wp-block-embed is-type-video is-provider-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper"><iframe width="560" height="315" src="https://www.youtube.com/embed/g7U96o3f9FI?enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><figcaption>Video youtube<br></figcaption></figure>
+    </div>
+    <div class="row">
+        <figure class="wp-block-embed-youtube wp-block-embed is-type-video is-provider-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper"><iframe width="560" height="315" src="https://www.youtube.com/embed/lvfyf7R8NVg?enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><figcaption>Video youtube<br></figcaption></figure>
+    </div>
+    <div class="row">
         <figure class="wp-block-embed-vimeo wp-block-embed is-type-video is-provider-vimeo wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper"><iframe src="https://player.vimeo.com/video/204029471?app_id=122963" width="500" height="281" frameborder="0" title="Introducing the Vimeo Panel for Adobe Premiere Pro" allow="autoplay; fullscreen" allowfullscreen="allowfullscreen" ></iframe></div><figcaption>Video as a link<br></figcaption></figure>
     </div>
     <div class="row">
@@ -78,12 +84,6 @@
     </div>
     <div class="row">
         <figure class="wp-block-video"><video controls="controls" src="https://motionarray.com/wp-content/uploads/masking-tutorial11.mp4"></video><figcaption>Video as a tag video</figcaption></figure>
-    </div>
-    <div class="row">
-        <figure class="wp-block-embed-youtube wp-block-embed is-type-video is-provider-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper"><iframe width="560" height="315" src="https://www.youtube.com/embed/g7U96o3f9FI?enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><figcaption>Video youtube<br></figcaption></figure>
-    </div>
-    <div class="row">
-        <figure class="wp-block-embed-youtube wp-block-embed is-type-video is-provider-youtube wp-embed-aspect-16-9 wp-has-aspect-ratio"><div class="wp-block-embed__wrapper"><iframe width="560" height="315" src="https://www.youtube.com/embed/lvfyf7R8NVg?enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><figcaption>Video youtube<br></figcaption></figure>
     </div>
 
     <div class="row">
@@ -117,7 +117,6 @@
         var video_youtube_list = $('.wp-block-embed-youtube iframe');
         var video_vimeo_list = $('.wp-block-embed-vimeo iframe');
         var video_block_list = $('.wp-block-video video');
-        
 
         var all_videos = video_youtube_list.add(video_vimeo_list).add(video_block_list);
         addVideoId(all_videos)
@@ -127,79 +126,53 @@
                 var video_item = $(this).attr('id', video_item_id)
             })
         }
+        
+        var players = new Array();
 
-
-        if(video_youtube_list.length > 0) {
-            videoYouTubeAPI(video_youtube_list);
-        }
-        if(video_vimeo_list.length > 0) {
-            // videoVimeoAPI(video_vimeo_list);
-        }
-        if(video_block_list.length > 0) {
-            // videoBlocksAPI(video_block_list);
-        }
-
+        videoYouTubeAPI(video_youtube_list);
+        videoVimeoAPI(video_vimeo_list);
+        videoBlocksAPI(video_block_list);
 
         function videoYouTubeAPI(video_youtube_list){
-            var youtube_players = new Array();
             window.onYouTubeIframeAPIReady = function() { 
-
                 video_youtube_list.each(function(i, item){
-
-                    youtube_players[i] = new YT.Player('video_item_' + i, { 
-                        events: { 
-                            'onReady': onPlayerReady,
+                    players.push(new YT.Player(item.id, { 
+                        events: {
                             'onStateChange': onPlayerStateChange
                         } 
-                    })
-
-                    console.log(youtube_players[i]);
+                    }))
                 })
-                console.log('youtube api ready', '----------');
+                console.log('YT api ready', '---');
             }
-
-            function onPlayerReady(event) { 
-                console.log(event);
-                console.log('youtube player ready', '------------');
-            }
-
             function onPlayerStateChange(event) {
-                console.log(event);
                 if (event.data == YT.PlayerState.PLAYING) {
-                    var videoId = event.target.a.id;
-
-                    $(youtube_players).each(function(i){
-                        var index = 'video_item_' + i;
-
-                        console.log(index, videoId);
-
-                        if( index != videoId) {
-                           this.stopVideo();
-                        }
-                    });
+                    stopAllVideos(event.target.a.id);
                 }
             }
         }
 
         function videoVimeoAPI(video_vimeo_list){
-            var vimeo_players = new Array();
+            // console.log(video_vimeo_list, 'list');
 
-            video_vimeo_list.each(function(i){
-                vimeo_players[i] = new Vimeo.Player('video_item_' + i);
-                vimeo_players[i].on('play', function(event) {
-                    var videoId = this.element.id;
-                    onPlay(this.element.id);
+            
+            video_vimeo_list.each(function(i, item){
+                var qwerty = new Vimeo.Player(item.id); 
+                qwerty.on('play', function(event) {
+                    stopAllVideos(item.element.id);
                 });
+                players.push(qwerty);
             });
-            function onPlay(element_id){
-                $(vimeo_players).each(function(i){
-                    var index = 'video_item_' + i;
-                    if( index != element_id) {
-                       this.pause()
-                    }
-                });
-            }
         }
+
+        // function videoVimeoAPI(video_vimeo_list){
+        //     var players = new Array();
+        //     video_vimeo_list.each(function(i, item){
+        //         players[i] = new Vimeo.Player(item.id);
+        //         players[i].on('play', function(event) {
+        //             stopAllVideos($(players), this.element.id);
+        //         });
+        //     });
+        // }
 
         function videoBlocksAPI(video_block_list){
             Object.defineProperty(HTMLMediaElement.prototype, 'playing', {
@@ -207,30 +180,48 @@
                     return !!(this.currentTime > 0 && !this.paused && !this.ended && this.readyState > 2);
                 }
             })
-
             video_block_list.each(function(i, element) {
                 $(element).on("playing", function (event) {
-                    onPlaying(event.target.id, event);
+                    stopAllVideos(event.target.id);
                 });
+                players.push(element);
             });
+        }
 
-            function onPlaying(element_id){
-                video_block_list.each(function(index, item){  
+
+        function onPauseYT(elements, element_id){
+            // console.log(elements);
+            players.forEach(function(item){
+                try {
+                    if( item.a.id != element_id) {
+                       item.pauseVideo();
+                    }
+                } catch (err) {}
+            });
+        }
+        function onPauseVM(elements, element_id){
+            players.forEach(function(item){
+                try {
+                    if( item.element.id != element_id) {
+                       item.pause();
+                    }
+                } catch (err) {}
+            });
+        }
+        function onPauseVB(elements, element_id){
+            players.forEach(function(item){  
+                try {
                     if( item.id != element_id) {
                        item.pause();
                     }
-                });
-            }
+                } catch (err) {}
+            });
         }
 
-        function stopAllVideos() {
-
-            function stopAllYoutubeVideos() { }
-
-            function stopAllVimeoVideos() { }
-
-            function stopAllDownloadedVideos() { }
-
+        function stopAllVideos(element_id) {
+            onPauseYT(players, element_id);
+            onPauseVM(players, element_id);
+            onPauseVB(players, element_id);
         }
 
     </script>
