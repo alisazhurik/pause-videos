@@ -151,16 +151,14 @@
             }
         }
 
-        function videoVimeoAPI(video_vimeo_list){
-            // console.log(video_vimeo_list, 'list');
-
-            
+        function videoVimeoAPI(video_vimeo_list){            
             video_vimeo_list.each(function(i, item){
-                var qwerty = new Vimeo.Player(item.id); 
-                qwerty.on('play', function(event) {
-                    stopAllVideos(item.element.id);
+                var player = new Vimeo.Player(item.id);
+                player.on('play', function(event) {
+                    console.log('--- 1', player.element.id, 'play ---');
+                    stopAllVideos(player.element.id);
                 });
-                players.push(qwerty);
+                players.push(player);
             });
         }
 
@@ -190,28 +188,30 @@
 
 
         function onPauseYT(elements, element_id){
-            // console.log(elements);
-            players.forEach(function(item){
+            elements.forEach(function(item){
                 try {
                     if( item.a.id != element_id) {
+                        console.log('--- 2', element_id, item.a.id, 'onPauseYT ---');
                        item.pauseVideo();
                     }
                 } catch (err) {}
             });
         }
         function onPauseVM(elements, element_id){
-            players.forEach(function(item){
+            elements.forEach(function(item){
                 try {
                     if( item.element.id != element_id) {
+                        console.log('--- 3', element_id, item.element.id, 'onPauseVM ---');
                        item.pause();
                     }
                 } catch (err) {}
             });
         }
         function onPauseVB(elements, element_id){
-            players.forEach(function(item){  
+            elements.forEach(function(item){
                 try {
                     if( item.id != element_id) {
+                        console.log('--- 4', element_id, item.id, 'onPauseVB ---');
                        item.pause();
                     }
                 } catch (err) {}
